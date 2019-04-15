@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Playground</string>
+    <!--Login UI-->
+    <string name="hint_repo">Repository name</string>
+    <string name="login">Login</string>
+    <string name="search_title">Repository name</string>
+</resources>
