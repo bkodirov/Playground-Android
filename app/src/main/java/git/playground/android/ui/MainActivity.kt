@@ -15,8 +15,6 @@ class MainActivity : AppCompatActivity() {
 
     private val searchViewDelegat = SearchViewDelegate()
     private lateinit var model:RepositoryViewModel
-@Inject
-lateinit var url: HttpUrl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -29,10 +27,6 @@ lateinit var url: HttpUrl
         DepGraph.component.inject(this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        Timber.d(url.toString())
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)

@@ -23,12 +23,21 @@ class RepositoryListFragment : Fragment() {
     }
     private val list = mutableListOf<Repository>()
     private val repositoryAdapter = RepositoryListAdapter(list)
-    private val chromeTabDelegate = ChromeTabsDelegate()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private lateinit var chromeTabDelegate:ChromeTabsDelegate
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_repo_list, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         initRecyclerView()
         listenToRepositories()
+        activity?.let {
+            chromeTabDelegate = ChromeTabsDelegate(it)
+        }
     }
 
     private fun initRecyclerView() {
@@ -54,24 +63,20 @@ class RepositoryListFragment : Fragment() {
             Timber.d("## REPOS received- > $it")
             when (it) {
                 is Success -> {
-                    hideLoader()
+//                    hideLoader()
                     list.clear()
                     list.addAll(it.repoList)
                     repositoryAdapter.notifyDataSetChanged()
                 }
                 is Fail-> {
-                    hideLoader()
-                    showErrorMessage()
+//                    hideLoader()
+//                    showErrorMessage()
                 }
                 is Loading-> {
-                    showLoader()
+//                    showLoader()
                 }
 
             }
         })
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_repo_list, container, false)
     }
 }
