@@ -5,16 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import git.playground.android.datalayer.api.GithubService
 import git.playground.android.di.DepGraph
+import git.playground.android.domain.SchedulerProvider
+import git.playground.android.ui.Adapter
 import git.playground.android.ui.Loading
 import git.playground.android.ui.RepositoryUiState
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
-class RepositoryViewModel : ViewModel() {
+class RepositoryViewModel: ViewModel() {
 
     @Inject lateinit var githubService: GithubService
+    @Inject lateinit var schedulerProvider: SchedulerProvider
     private val repositories = MutableLiveData<RepositoryUiState>()
-    @Volatile private var disposable:Disposable?=null
+    @Volatile private var disposable: Disposable? = null
 
     init {
         DepGraph.component.inject(this)
@@ -28,13 +31,14 @@ class RepositoryViewModel : ViewModel() {
         disposable?.dispose()
         repositories.value = Loading
 
-//        disposable = githubService.fetchRepositoryList(repositoryName)
-//            .map { RepositoryUiState.map(it) }
-//            .subscribeOn(Schedulers.io())
-//            .subscribe({ repositories.value = it }, {
-//                //Handle the error properly
-//                repositories.value = RepositoryUiState.map(it)
-//            })
+        disposable = githubService.fetchRepositoryList(repositoryName)
+            .map { Adapter.map(it) }
+            .subscribeOn(schedulerProvider.io())
+            .observeOn(schedulerProvider.ui())
+            .subscribe({ repositories.value = it }, {
+                //Handle the error properly
+                repositories.value = Adapter.map(it)
+            })
     }
 
     override fun onCleared() {

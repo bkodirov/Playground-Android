@@ -6,7 +6,7 @@ import git.playground.android.datalayer.api.ApiModule
 import git.playground.android.ui.MainActivity
 import git.playground.android.viewmodel.RepositoryViewModel
 
-@Component(modules = [ MainModule::class, DataModule::class, ApiModule::class ])
+@Component(modules = [ DataModule::class])
 interface MainComponent {
     fun inject(presenter: RepositoryViewModel)
     fun inject(presenter: MainActivity)

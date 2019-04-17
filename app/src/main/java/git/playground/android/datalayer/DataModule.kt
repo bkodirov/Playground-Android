@@ -3,9 +3,10 @@ package git.playground.android.datalayer
 import android.app.Application
 import dagger.Module
 import dagger.Provides
+import git.playground.android.datalayer.api.ApiModule
 import okhttp3.OkHttpClient
 
-@Module
+@Module(includes = [ApiModule::class])
 class DataModule (private val app: Application){
 
     @Provides
