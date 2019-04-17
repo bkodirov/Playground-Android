@@ -9,8 +9,6 @@ object Loading:RepositoryUiState()
 data class Fail(val message:String):RepositoryUiState()
 data class Success(val repoList: List<Repository>):RepositoryUiState()
 
-
-
 class Adapter {
     companion object {
         fun map(t:Throwable):RepositoryUiState {

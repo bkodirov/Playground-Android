@@ -15,7 +15,7 @@ object DepGraph {
     val component: MainComponent by lazy {
         application?.let {
             DaggerMainComponent.builder()
-                .apiModule(ApiModule())
+                .mainModule(MainModule(it))
                 .build()
         } ?: throw IllegalStateException("Graph has not been initialized")
     }

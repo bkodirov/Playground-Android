@@ -9,7 +9,7 @@ import git.playground.android.datalayer.date.InstantAdapter
 import okhttp3.OkHttpClient
 
 @Module(includes = [ApiModule::class])
-class DataModule {
+class DebugDataModule {
 
     @Provides
     fun provideMoshi(): Moshi {
