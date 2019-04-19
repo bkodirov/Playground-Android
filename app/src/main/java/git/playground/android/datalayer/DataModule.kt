@@ -12,13 +12,6 @@ import okhttp3.OkHttpClient
 class DataModule {
 
     @Provides
-    fun provideMoshi(): Moshi {
-        return Moshi.Builder()
-            .add(InstantAdapter())
-            .build()
-    }
-
-    @Provides
     fun provideOkHttpClient(app: Application): OkHttpClient {
         return createOkHttpClient(app).build()
     }

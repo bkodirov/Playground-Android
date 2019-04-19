@@ -3,6 +3,8 @@ package git.playground.android.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,9 +23,10 @@ class RepositoryListFragment : Fragment() {
             return RepositoryListFragment()
         }
     }
+
     private val list = mutableListOf<Repository>()
     private val repositoryAdapter = RepositoryListAdapter(list)
-    private lateinit var chromeTabDelegate:ChromeTabsDelegate
+    private lateinit var chromeTabDelegate: ChromeTabsDelegate
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -49,8 +52,8 @@ class RepositoryListFragment : Fragment() {
             // specify an viewAdapter (see also next example)
             adapter = repositoryAdapter
         }
-        repositoryAdapter.itemClickListener =  { pos:Int, repo:Repository ->
-
+        repositoryAdapter.itemClickListener = { repo: Repository ->
+            chromeTabDelegate.launchTab(repo.htmlUrl)
         }
     }
 
@@ -62,21 +65,27 @@ class RepositoryListFragment : Fragment() {
             // update UI
             Timber.d("## REPOS received- > $it")
             when (it) {
-                is Success -> {
-//                    hideLoader()
-                    list.clear()
-                    list.addAll(it.repoList)
-                    repositoryAdapter.notifyDataSetChanged()
-                }
-                is Fail-> {
-//                    hideLoader()
-//                    showErrorMessage()
-                }
-                is Loading-> {
-//                    showLoader()
-                }
-
+                is Success -> renderSuccess(it.repoList)
+                is Fail -> renderError(it.message)
+                is Loading -> progressParent.visibility = VISIBLE
             }
         })
+    }
+
+    private fun renderSuccess(repoList: List<Repository>) {
+        progressParent.visibility = GONE
+        tvError.visibility = GONE
+        repositoryRecyclerView.visibility = VISIBLE
+        repositoryAdapter
+        list.clear()
+        list.addAll(repoList)
+        repositoryAdapter.notifyDataSetChanged()
+    }
+
+    private fun renderError(message: String) {
+        progressParent.visibility = GONE
+        repositoryRecyclerView.visibility = GONE
+        tvError.visibility = VISIBLE
+        tvError.text = message
     }
 }

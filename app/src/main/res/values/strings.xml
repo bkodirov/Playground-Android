@@ -4,4 +4,15 @@
     <string name="hint_repo">Repository name</string>
     <string name="login">Login</string>
     <string name="search_title">Repository name</string>
+
+    <!--Repository List-->
+    <string name="template_repo">Repo: %1$s</string>
+    <string name="template_description">Description: %1$s</string>
+    <string name="template_created_at">Created at: %1$s</string>
+    <string name="template_updated_at">Updated at: %1$s</string>
+    <string name="template_language">Language: %1$s</string>
+    <string name="template_status">Status: %1$s</string>
+
+    <!--Common-->
+    <string name="common_wait">Please wait</string>
 </resources>

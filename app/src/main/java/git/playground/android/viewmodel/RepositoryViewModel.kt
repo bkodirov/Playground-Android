@@ -1,5 +1,6 @@
 package git.playground.android.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import git.playground.android.ui.Adapter
 import git.playground.android.ui.Loading
 import git.playground.android.ui.RepositoryUiState
 import io.reactivex.disposables.Disposable
+import timber.log.Timber
 import javax.inject.Inject
 
 class RepositoryViewModel: ViewModel() {
@@ -37,6 +39,7 @@ class RepositoryViewModel: ViewModel() {
             .observeOn(schedulerProvider.ui())
             .subscribe({ repositories.value = it }, {
                 //Handle the error properly
+                Timber.e(Log.getStackTraceString(it))
                 repositories.value = Adapter.map(it)
             })
     }

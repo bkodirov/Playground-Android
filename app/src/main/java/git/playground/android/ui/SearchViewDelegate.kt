@@ -2,6 +2,7 @@ package git.playground.android.ui
 
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
+import git.playground.android.platform.Utils
 import git.playground.android.viewmodel.RepositoryViewModel
 
 class SearchViewDelegate {
@@ -12,6 +13,7 @@ class SearchViewDelegate {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let { if (it.isNotBlank()) viewModel.searchRepository(it) }
+                Utils.hideKeyboard(searchView)
                 return true
             }
 

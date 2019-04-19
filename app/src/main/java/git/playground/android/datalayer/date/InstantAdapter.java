@@ -2,7 +2,7 @@ package git.playground.android.datalayer.date;
 
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.ToJson;
-import java.time.Instant;
+import org.threeten.bp.Instant;
 
 @SuppressWarnings("unused") // Accessed via reflection by Moshi.
 public final class InstantAdapter {

@@ -1,8 +1,10 @@
 package git.playground.android.datalayer.api
 
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
+import git.playground.android.datalayer.date.InstantAdapter
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -32,5 +34,14 @@ class ApiModule {
     @Provides
     fun provideGithubService(retrofit: Retrofit): GithubService {
         return retrofit.create<GithubService>(GithubService::class.java)
+    }
+
+
+    @Provides
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder()
+            .add(InstantAdapter())
+            .add(KotlinJsonAdapterFactory())
+            .build()
     }
 }

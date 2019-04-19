@@ -6,6 +6,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface GithubService {
-    @GET("/orgs/{ORGANIZATION}/repos")
+    @GET("orgs/{ORGANIZATION}/repos")
     fun fetchRepositoryList(@Path("ORGANIZATION") org: String): Single<List<Repository>>
 }
