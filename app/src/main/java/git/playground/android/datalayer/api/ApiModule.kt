@@ -32,8 +32,8 @@ class ApiModule {
     }
 
     @Provides
-    fun provideGithubService(retrofit: Retrofit): GithubService {
-        return retrofit.create<GithubService>(GithubService::class.java)
+    fun provideGithubService(retrofit: Retrofit): GitHubRestApi {
+        return retrofit.create<GitHubRestApi>(GitHubRestApi::class.java)
     }
 
 

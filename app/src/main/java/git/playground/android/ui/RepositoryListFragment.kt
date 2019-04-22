@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import git.playground.android.R
 import git.playground.android.domain.model.Repository
 import git.playground.android.ui.list.RepositoryListAdapter
-import git.playground.android.viewmodel.RepositoryViewModel
+import git.playground.android.viewmodel.GitRepoViewModel
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 import timber.log.Timber
 
@@ -60,7 +60,7 @@ class RepositoryListFragment : Fragment() {
     private fun listenToRepositories() {
         val localActivityRef = activity
         localActivityRef ?: return
-        val repositoryViewModel = ViewModelProviders.of(localActivityRef).get(RepositoryViewModel::class.java)
+        val repositoryViewModel = ViewModelProviders.of(localActivityRef).get(GitRepoViewModel::class.java)
         repositoryViewModel.getRepositories().observe(this, Observer<RepositoryUiState> {
             // update UI
             Timber.d("## REPOS received- > $it")

@@ -59,7 +59,12 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.19'
     implementation 'com.google.dagger:dagger:2.19'
 
+    // Small testing
+    testImplementation 'net.lachlanmckee:timber-junit-rule:1.0.1'
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
+    testImplementation 'org.mockito:mockito-core:2.23.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0-alpha03'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha03'
+    testImplementation 'com.google.truth:truth:0.44'
+    androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
 }

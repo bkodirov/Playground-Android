@@ -1,13 +1,11 @@
 package git.playground.android.di
 
 import dagger.Component
-import git.playground.android.datalayer.DataModule
-import git.playground.android.datalayer.api.ApiModule
 import git.playground.android.ui.MainActivity
-import git.playground.android.viewmodel.RepositoryViewModel
+import git.playground.android.viewmodel.GitRepoViewModel
 
 @Component(modules = [ MainModule::class])
 interface MainComponent {
-    fun inject(presenter: RepositoryViewModel)
-    fun inject(presenter: MainActivity)
+    fun inject(viewModel: GitRepoViewModel)
+    fun inject(activity: MainActivity)
 }

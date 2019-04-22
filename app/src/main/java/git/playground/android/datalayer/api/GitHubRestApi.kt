@@ -5,7 +5,7 @@ import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface GithubService {
+interface GitHubRestApi {
     @GET("orgs/{ORGANIZATION}/repos")
     fun fetchRepositoryList(@Path("ORGANIZATION") org: String): Single<List<Repository>>
 }

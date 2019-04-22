@@ -6,25 +6,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import git.playground.android.R
 import git.playground.android.di.DepGraph
-import git.playground.android.viewmodel.RepositoryViewModel
-import okhttp3.HttpUrl
-import timber.log.Timber
+import git.playground.android.viewmodel.GitRepoViewModel
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    private val searchViewDelegat = SearchViewDelegate()
-    private lateinit var model:RepositoryViewModel
+    private lateinit var model:GitRepoViewModel
+    @Inject lateinit var searchViewDelegat:SearchViewDelegate
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjection()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        model = ViewModelProviders.of(this).get(RepositoryViewModel::class.java)
-        initInjection()
+        model = ViewModelProviders.of(this).get(GitRepoViewModel::class.java)
         supportFragmentManager.beginTransaction().add(R.id.activity_container, RepositoryListFragment.newInstance()).commitAllowingStateLoss()
     }
 
     private fun initInjection() {
-        DepGraph.component.inject(this)
+        DepGraph.inject(this)
     }
 
 
