@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initInjection() {
-        DepGraph.inject(this)
+        DepGraph.mainComponent?.inject(this)
     }
 
 

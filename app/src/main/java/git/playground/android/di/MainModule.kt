@@ -1,9 +1,8 @@
 package git.playground.android.di
 
-import android.app.Application
+import android.content.Context
 import dagger.Module
 import dagger.Provides
-import git.playground.android.PlaygroundApplication
 import git.playground.android.datalayer.DataModule
 import git.playground.android.domain.SchedulerProvider
 import git.playground.android.domain.SchedulerProviderImpl
@@ -11,17 +10,19 @@ import git.playground.android.platform.PlatformSpecificUtils
 import git.playground.android.viewmodel.GitRepoModule
 
 @Module(includes = [DataModule::class, GitRepoModule::class])
-class MainModule(private val app: PlaygroundApplication) {
+class MainModule(private val context: Context) {
     @Provides
-    fun provideApplicationContext() :Application {
-        return app
+    fun provideApplicationContext(): Context {
+        return context
     }
+
     @Provides
-    fun rxSchedulerProvier(): SchedulerProvider {
+    fun rxSchedulerProvider(): SchedulerProvider {
         return SchedulerProviderImpl
     }
+
     @Provides
-    fun providePlatformSpecificUtils():PlatformSpecificUtils {
+    fun providePlatformSpecificUtils(): PlatformSpecificUtils {
         return PlatformSpecificUtils()
     }
 }

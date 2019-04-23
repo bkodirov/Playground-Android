@@ -1,5 +1,6 @@
 package git.playground.android.datalayer.api
 
+import android.content.Context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -13,7 +14,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 @Module
 //class ApiModule(private val dataModule: DataModule) {
-class ApiModule {
+open class ApiModule(private val context: Context) {
     private val PRODUCTION_API_URL = HttpUrl.parse("https://api.github.com/")
 
     @Provides
@@ -32,7 +33,7 @@ class ApiModule {
     }
 
     @Provides
-    fun provideGithubService(retrofit: Retrofit): GitHubRestApi {
+    open fun provideGithubService(retrofit: Retrofit): GitHubRestApi {
         return retrofit.create<GitHubRestApi>(GitHubRestApi::class.java)
     }
 

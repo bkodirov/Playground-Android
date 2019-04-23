@@ -8,4 +8,5 @@ import retrofit2.http.Path
 interface GitHubRestApi {
     @GET("orgs/{ORGANIZATION}/repos")
     fun fetchRepositoryList(@Path("ORGANIZATION") org: String): Single<List<Repository>>
+
 }

@@ -2,28 +2,19 @@ package git.playground.android.di
 
 import com.jakewharton.threetenabp.AndroidThreeTen
 import git.playground.android.PlaygroundApplication
-import git.playground.android.ui.MainActivity
-import git.playground.android.viewmodel.GitRepoViewModel
+import git.playground.android.datalayer.api.ApiModule
 
-object DepGraph: MainComponent {
+object DepGraph {
     private var application: PlaygroundApplication? = null
-    private var mainComponent: MainComponent? = null
+    var mainComponent: MainComponent? = null
 
-    override fun inject(viewModel: GitRepoViewModel) {
-        mainComponent?.inject(viewModel)
-    }
-
-    override fun inject(activity: MainActivity) {
-        mainComponent?.inject(activity)
-    }
 
     fun init(application: PlaygroundApplication) {
         this.application = application
-        mainComponent = DepGraph.application?.let {
-            DaggerMainComponent.builder()
-                .mainModule(MainModule(it))
-                .build()
-        } ?: throw IllegalStateException("Graph has not been initialized")
+        mainComponent = DaggerMainComponent.builder()
+            .mainModule(MainModule(application))
+            .apiModule(ApiModule(application))
+            .build()
         AndroidThreeTen.init(application)
     }
 }

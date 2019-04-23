@@ -23,7 +23,7 @@ class GitRepoViewModel : ViewModel() {
     private var disposable: Disposable? = null
 
     init {
-        DepGraph.inject(this)
+        DepGraph.mainComponent?.inject(this)
     }
 
     fun getRepositories(): LiveData<RepositoryUiState> {
@@ -31,14 +31,17 @@ class GitRepoViewModel : ViewModel() {
     }
 
     fun searchRepository(repositoryName: String) {
+        Timber.d("## Search. started")
         disposable?.dispose()
         repoListLiveData.value = Loading
-
+        Timber.d("## Search. call-> gitHubRestApi.fetchRepositoryList()")
         disposable = gitHubRestApi.fetchRepositoryList(repositoryName)
             .map { GitRepoResponseAdapter.map(it) }
             .subscribeOn(schedulerProvider.io())
             .observeOn(schedulerProvider.ui())
-            .subscribe({ repoListLiveData.value = it }, {
+            .subscribe({
+                Timber.d("## Search. call-> repoListLiveData.value=$it")
+                repoListLiveData.value = it }, {
                 //Handle the error properly
                 Timber.e(it)
                 repoListLiveData.value = GitRepoResponseAdapter.map(it)
