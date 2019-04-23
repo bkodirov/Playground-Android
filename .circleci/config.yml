@@ -6,10 +6,186 @@ orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.3.1
 
-# Orchestrate or schedule a set of jobs, see https://circleci.com/docs/2.0/workflows/
+jobs:
+  build:
+    working_directory: /home/circleci/playground
+    docker:
+    - image:  circleci/android:api-27-alpha
+    resource_class: xlarge
+    environment:
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xms2048m -Xmx12288m -XX:PermSize=512m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=1024m -XX:+UseCompressedOops -XX:+HeapDumpOnOutOfMemoryError"'
+      TERM: dumb
+    steps:
+    - attach_workspace:
+        at: /home/circleci/playground
+    - restore_cache:
+        keys: # use increasingly general patterns to restore cache
+        - android-cache-{{ .Branch }}-{{ checksum "checksum-gradle.tmp" }}
+        - android-cache-{{ .Branch }}-
+        - android-cache-
+    - run:
+        name: Download Dependencies
+        command: ./gradlew androidDependencies
+    - run:
+        name: Build APKs and Instrumentation Test
+        command: ./gradlew --stacktrace :app:assemble :app:assembleAndroidTest --max-workers=8
+    - run:
+        name: Run Unit Tests
+        command: ./gradlew :app:test --max-workers=1
+    - save_cache:
+        key: android-cache-{{ .Branch }}-{{ checksum "checksum-gradle.tmp" }}
+        paths:
+        - /home/circleci/.gradle
+    # Expose unit test results in CI
+    - store_test_results:
+        path: app/build/test-results
+    - store_artifacts:
+        path: app/build/reports
+        destination: test-reports
+    # Save builds
+    - store_artifacts:
+        path: app/build/outputs/apk/smartphone
+        destination: smartphone
+    # save APKs  to the workspace for instrumentation testing and deployment
+    - persist_to_workspace:
+        root: /home/circleci/playground
+        paths:
+        - app/build/outputs
+        - app/build/jacoco
+        - app/build/intermediates
+        - app/build/tmp/kotlin-classes
+
+  # run instrumentation tests on devices in Google Test Lab
+  instrumentation_test:
+    working_directory: /home/circleci/playground
+    docker:
+    - image: google/cloud-sdk:latest
+    environment:
+      TERM: "dumb"
+    steps:
+    - attach_workspace:
+        at: /home/circleci/playground
+    - run:
+        name: Authenticate with Google Test Lab in development environment
+        command: |
+          echo $DEV_GCLOUD_KEY_JSON | gcloud auth activate-service-account --key-file=-
+          gcloud config set project beka-dev
+    - run:
+        name: Run instrumentation tests in Google Test Lab on Mobile Build
+        command: |
+          echo "y" | gcloud firebase test android run \
+              --type instrumentation \
+              --device model=walleye,version=28,locale=en,orientation=portrait \
+              --app app/build/outputs/apk/TODO/debug/*.apk \
+              --test app/build/outputs/apk/androidTest/TODO/debug/*.apk \
+              --directories-to-pull /sdcard/ \
+              --environment-variables coverage=true,coverageFile=/sdcard/coverage.ec \
+              --no-auto-google-login \
+              --results-bucket gs://fubotv-dev-test-lab-results 2>&1 | tee -i labresults.txt
+    - run:
+        name: Download instrumentation test results
+        when: always
+        command: |
+          mkdir -p app/build/testlab-results
+          gsutil -m cp -r -U gs://`cat labresults.txt | grep test-lab-results | cut -d'/' -f6,7`/* app/build/testlab-results | true
+    # save instrumentation test results to help diagnose build-issues
+    - store_artifacts:
+        path: app/build/testlab-results
+        destination: testlab-results
+    - run:
+        name: Expose code coverage report of instrumentation test from Google Test lab in Circle-CI
+        when: always
+        command: |
+          mkdir -p app/build/outputs/code-coverage/connected/TODO
+              cp app/build/testlab-results/walleye-28-en-portrait/artifacts/coverage.ec app/build/outputs/code-coverage/connected/SMARTPHONE/coverage-mobile.ec
+    # save instrumentation test coverage
+    - store_test_results:
+        path: app/build/testlab-results/walleye-28-en-portrait/
+    - persist_to_workspace:
+        root: /home/circleci/playground
+        paths:
+        - app/build/outputs/code-coverage
+
+  report:
+    working_directory: /home/circleci/playground
+    docker:
+    - image: circleci/android:api-27-alpha
+    resource_class: xlarge
+    environment:
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xms2048m -Xmx12288m -XX:PermSize=512m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=1024m -XX:+UseCompressedOops -XX:+HeapDumpOnOutOfMemoryError"'
+      TERM: dumb
+    steps:
+    - attach_workspace:
+        at: /home/circleci/playground
+    - restore_cache:
+        keys: # use increasingly general patterns to restore cache
+        - android-cache-{{ .Branch }}-{{ checksum "checksum-gradle.tmp" }}
+        - android-cache-{{ .Branch }}-
+        - android-cache-
+    - run:
+        name: Generate JaCoCo unified code coverage report
+        command: ./gradlew app:jacocoTestReportTODO
+    # save interesting folders to help diagnose build-issues
+        path: app/build/reports/jacoco/mobile
+        destination: reports
+    # only push code coverage if all tests have passed, this ensures more consistent coverage results
+    - run:
+        name: Run code coverage analysis
+        command: bash <(curl -s https://codecov.io/bash) -s app/build/reports/jacoco/TODO -t "$CODE_COVERAGE_TOKEN" -F TODO
+
+  publish:
+    working_directory: /home/circleci/playground
+    docker:
+    - image: circleci/android:api-27-alpha
+    environment:
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xms2048m -Xmx12288m -XX:PermSize=512m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=1024m -XX:+UseCompressedOops -XX:+HeapDumpOnOutOfMemoryError"'
+    steps:
+    - attach_workspace:
+        at: /home/circleci/playground
+    #      - run:
+    #          name: Upload to Crashlytics Beta
+    #          command: fastlane beta
+    - run:
+        name: Upload APK to fabric
+        command: ./gradlew TODO
 workflows:
-  # Name the workflow "Welcome"
-  Welcome:
-    # Run the welcome/run job in its own container
+  version: 2
+  build_test_and_deploy:
     jobs:
-    - welcome/run
+    - report:
+        requires:
+        - instrumentation_test
+    - build:
+        filters:
+          branches:
+            only:
+            - /master\/.*/
+            - /.*fix.*/
+            - /epic.*/
+            - /feature.*/
+          tags:
+            only:
+            - /.*/
+    - instrumentation_test:
+        requires:
+        - build
+        filters:
+          branches:
+            only:
+            - /master\/.*/
+            - /feature.*/
+            - /.*fix.*/
+            - /epic\/.*/
+          tags:
+            only:
+            - /.*/
+    - publish:
+        requires:
+        - instrumentation_test
+        filters:
+          branches:
+            only:
+            - /master/
+          tags:
+            only:
+            - /v[0-9]\.[0-9]\.[0-9](-rc[0-9]+)?/
