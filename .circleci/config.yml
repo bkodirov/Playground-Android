@@ -152,14 +152,11 @@ workflows:
   version: 2
   build_test_and_deploy:
     jobs:
-    - report:
-        requires:
-        - instrumentation_test
     - build:
         filters:
           branches:
             only:
-            - /master\/.*/
+            - /master/
             - /.*fix.*/
             - /epic.*/
             - /feature.*/
@@ -172,13 +169,16 @@ workflows:
         filters:
           branches:
             only:
-            - /master\/.*/
+            - /master/
             - /feature.*/
             - /.*fix.*/
-            - /epic\/.*/
+            - /epic.*/
           tags:
             only:
             - /.*/
+    - report:
+        requires:
+        - instrumentation_test
     - publish:
         requires:
         - instrumentation_test
