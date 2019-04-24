@@ -16,8 +16,10 @@ jobs:
       GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xms2048m -Xmx12288m -XX:PermSize=512m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=1024m -XX:+UseCompressedOops -XX:+HeapDumpOnOutOfMemoryError"'
       TERM: dumb
     steps:
-    - attach_workspace:
-        at: /home/circleci/playground
+    - checkout
+    - run:
+        name: Aggregate dependencies into a checksum generating file
+        command: cat **/*.gradle > checksum-gradle.tmp && cat .circleci/config.yml >> checksum-gradle.tmp
     - restore_cache:
         keys: # use increasingly general patterns to restore cache
         - android-cache-{{ .Branch }}-{{ checksum "checksum-gradle.tmp" }}
@@ -44,8 +46,8 @@ jobs:
         destination: test-reports
     # Save builds
     - store_artifacts:
-        path: app/build/outputs/apk/smartphone
-        destination: smartphone
+        path: app/build/outputs/apk
+        destination: apk
     # save APKs  to the workspace for instrumentation testing and deployment
     - persist_to_workspace:
         root: /home/circleci/playground
@@ -76,8 +78,8 @@ jobs:
           echo "y" | gcloud firebase test android run \
               --type instrumentation \
               --device model=walleye,version=28,locale=en,orientation=portrait \
-              --app app/build/outputs/apk/TODO/debug/*.apk \
-              --test app/build/outputs/apk/androidTest/TODO/debug/*.apk \
+              --app app/build/outputs/apk/debug/*.apk \
+              --test app/build/outputs/apk/androidTest/debug/*.apk \
               --directories-to-pull /sdcard/ \
               --environment-variables coverage=true,coverageFile=/sdcard/coverage.ec \
               --no-auto-google-login \
@@ -97,7 +99,7 @@ jobs:
         when: always
         command: |
           mkdir -p app/build/outputs/code-coverage/connected/TODO
-              cp app/build/testlab-results/walleye-28-en-portrait/artifacts/coverage.ec app/build/outputs/code-coverage/connected/SMARTPHONE/coverage-mobile.ec
+              cp app/build/testlab-results/walleye-28-en-portrait/artifacts/coverage.ec app/build/outputs/code-coverage/connected/TODO/coverage-mobile.ec
     # save instrumentation test coverage
     - store_test_results:
         path: app/build/testlab-results/walleye-28-en-portrait/
@@ -142,9 +144,6 @@ jobs:
     steps:
     - attach_workspace:
         at: /home/circleci/playground
-    #      - run:
-    #          name: Upload to Crashlytics Beta
-    #          command: fastlane beta
     - run:
         name: Upload APK to fabric
         command: ./gradlew TODO
