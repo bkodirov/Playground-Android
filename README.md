@@ -29,6 +29,7 @@ Currently CI has following steps:
 ## TODOs
 - Remove Dagger module inheritance. Instead use [suggested approach by Dagger Authors.](https://google.github.io/dagger/testing.html)
 - CI/CD process should be completed
+- SetUp JaCoCo properly 
 - HTTP and IO errors should be displayed properly on UI
 - Integrating analytics
 - Showcases for Feature Flag(Like LaunchDarkly)
