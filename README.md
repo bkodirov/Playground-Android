@@ -1,6 +1,6 @@
 # Playground
 
-[![CircleCI](https://circleci.com/gh/bkodirov/Playground-Android-.svg?style=svg)](https://circleci.com/gh/bkodirov/Playground-Android-)
+[![CircleCI](https://circleci.com/gh/bkodirov/Playground-Android.svg?style=svg)](https://circleci.com/gh/bkodirov/Playground-Android)
 [![codecov](https://codecov.io/gh/bkodirov/Playground-Android-/branch/master/graph/badge.svg)](https://codecov.io/gh/bkodirov/Playground-Android-)
 
 # The purpose of the project
