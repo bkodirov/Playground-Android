@@ -81,8 +81,7 @@ jobs:
               --test app/build/outputs/apk/androidTest/debug/*.apk \
               --directories-to-pull /sdcard/ \
               --environment-variables coverage=true,coverageFile=/sdcard/coverage.ec \
-              --no-auto-google-login \
-              --results-bucket gs://fubotv-dev-test-lab-results 2>&1 | tee -i labresults.txt
+              --no-auto-google-login
     - run:
         name: Download instrumentation test results
         when: always
