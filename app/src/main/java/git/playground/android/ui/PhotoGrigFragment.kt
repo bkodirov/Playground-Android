@@ -9,24 +9,24 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import git.playground.android.R
-import git.playground.android.domain.model.Repository
-import git.playground.android.ui.list.RepositoryListAdapter
-import git.playground.android.viewmodel.GitRepoViewModel
+import git.playground.android.ui.list.FlickrPhotoAdapter
+import git.playground.android.viewmodel.FlickrPhotoFetcherViewModel
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 import timber.log.Timber
 
-class RepositoryListFragment : Fragment() {
+class PhotoGrigFragment : Fragment() {
     companion object {
-        fun newInstance(): RepositoryListFragment {
-            return RepositoryListFragment()
+        fun newInstance(): PhotoGrigFragment {
+            return PhotoGrigFragment()
         }
     }
 
-    private val list = mutableListOf<Repository>()
-    private val repositoryAdapter = RepositoryListAdapter(list)
-    private lateinit var chromeTabDelegate: ChromeTabsDelegate
+    private val list = mutableListOf<UiPhotoCellDto>()
+    private val repositoryAdapter = FlickrPhotoAdapter(list)
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -38,13 +38,10 @@ class RepositoryListFragment : Fragment() {
         setHasOptionsMenu(true)
         initRecyclerView()
         listenToRepositories()
-        activity?.let {
-            chromeTabDelegate = ChromeTabsDelegate(it)
-        }
     }
 
     private fun initRecyclerView() {
-        val viewManager = LinearLayoutManager(context)
+        val viewManager = GridLayoutManager(context, 3, LinearLayoutManager.VERTICAL, false)
 
         repositoryRecyclerView.apply {
             setHasFixedSize(true)
@@ -52,16 +49,16 @@ class RepositoryListFragment : Fragment() {
             // specify an viewAdapter (see also next example)
             adapter = repositoryAdapter
         }
-        repositoryAdapter.itemClickListener = { repo: Repository ->
-            chromeTabDelegate.launchTab(repo.htmlUrl)
+        repositoryAdapter.itemClickListener = { repo: UiPhotoCellDto ->
+            //TODO Open the image on the big screen
         }
     }
 
     private fun listenToRepositories() {
         val localActivityRef = activity
         localActivityRef ?: return
-        val repositoryViewModel = ViewModelProviders.of(localActivityRef).get(GitRepoViewModel::class.java)
-        repositoryViewModel.getRepositories().observe(this, Observer<RepositoryUiState> {
+        val repositoryViewModel = ViewModelProviders.of(localActivityRef).get(FlickrPhotoFetcherViewModel::class.java)
+        repositoryViewModel.getPhotos().observe(this, Observer<PhotoSearchUiState> {
             // update UI
             Timber.d("## REPOS received- > $it")
             when (it) {
@@ -72,7 +69,7 @@ class RepositoryListFragment : Fragment() {
         })
     }
 
-    private fun renderSuccess(repoList: List<Repository>) {
+    private fun renderSuccess(repoList: List<UiPhotoCellDto>) {
         progressParent.visibility = GONE
         tvError.visibility = GONE
         repositoryRecyclerView.visibility = VISIBLE

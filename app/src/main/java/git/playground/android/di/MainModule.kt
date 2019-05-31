@@ -7,9 +7,9 @@ import git.playground.android.datalayer.DataModule
 import git.playground.android.domain.SchedulerProvider
 import git.playground.android.domain.SchedulerProviderImpl
 import git.playground.android.platform.PlatformSpecificUtils
-import git.playground.android.viewmodel.GitRepoModule
+import git.playground.android.viewmodel.SearchModuleModule
 
-@Module(includes = [DataModule::class, GitRepoModule::class])
+@Module(includes = [DataModule::class, SearchModuleModule::class])
 class MainModule(private val context: Context) {
     @Provides
     fun provideApplicationContext(): Context {

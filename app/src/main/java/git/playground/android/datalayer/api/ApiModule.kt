@@ -15,7 +15,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @Module
 //class ApiModule(private val dataModule: DataModule) {
 open class ApiModule(private val context: Context) {
-    private val PRODUCTION_API_URL = HttpUrl.parse("https://api.github.com/")
+    private val PRODUCTION_API_URL = HttpUrl.parse("https://api.flickr.com/")
 
     @Provides
     fun baseUrlProvider(): HttpUrl {
@@ -33,8 +33,8 @@ open class ApiModule(private val context: Context) {
     }
 
     @Provides
-    open fun provideGithubService(retrofit: Retrofit): GitHubRestApi {
-        return retrofit.create<GitHubRestApi>(GitHubRestApi::class.java)
+    open fun provideGithubService(retrofit: Retrofit): FlickrRestApi {
+        return retrofit.create<FlickrRestApi>(FlickrRestApi::class.java)
     }
 
 

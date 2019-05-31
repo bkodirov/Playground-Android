@@ -6,20 +6,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import git.playground.android.R
 import git.playground.android.di.DepGraph
-import git.playground.android.viewmodel.GitRepoViewModel
+import git.playground.android.viewmodel.FlickrPhotoFetcherViewModel
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var model:GitRepoViewModel
+    private lateinit var model:FlickrPhotoFetcherViewModel
     @Inject lateinit var searchViewDelegat:SearchViewDelegate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjection()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        model = ViewModelProviders.of(this).get(GitRepoViewModel::class.java)
-        supportFragmentManager.beginTransaction().add(R.id.activity_container, RepositoryListFragment.newInstance()).commitAllowingStateLoss()
+        model = ViewModelProviders.of(this).get(FlickrPhotoFetcherViewModel::class.java)
+        supportFragmentManager.beginTransaction().add(R.id.activity_container, PhotoGrigFragment.newInstance()).commitAllowingStateLoss()
     }
 
     private fun initInjection() {

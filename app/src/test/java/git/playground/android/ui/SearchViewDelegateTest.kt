@@ -4,7 +4,7 @@ import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import com.nhaarman.mockitokotlin2.*
 import git.playground.android.platform.PlatformSpecificUtils
-import git.playground.android.viewmodel.GitRepoViewModel
+import git.playground.android.viewmodel.FlickrPhotoFetcherViewModel
 import net.lachlanmckee.timberjunit.TimberTestRule
 import org.junit.Before
 import org.junit.Rule
@@ -14,7 +14,7 @@ class SearchViewDelegateTest {
     @get:Rule val timberRule = TimberTestRule.logAllWhenTestFails()
 
     private lateinit var searchViewDelegate: SearchViewDelegate
-    private val viewModelMock: GitRepoViewModel = mock()
+    private val viewModelMock: FlickrPhotoFetcherViewModel = mock()
     private lateinit var onQueryTextListener: SearchView.OnQueryTextListener
 
     private var utilsMock = mock<PlatformSpecificUtils>()
@@ -49,7 +49,7 @@ class SearchViewDelegateTest {
     fun `when non empty string passed to onQueryTextSubmit THEN viewModel's searchRepository methods is invoked`() {
         val expected = "search term"
         onQueryTextListener.onQueryTextSubmit(expected)
-        verify(viewModelMock).searchRepository(expected)
+        verify(viewModelMock).searchPhotos(expected)
     }
     @Test
     fun `when non empty string passed to onQueryTextSubmit THEN utils#hideKeyboard is invoked with searchView`() {

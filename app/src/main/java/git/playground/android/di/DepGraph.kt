@@ -1,6 +1,5 @@
 package git.playground.android.di
 
-import com.jakewharton.threetenabp.AndroidThreeTen
 import git.playground.android.PlaygroundApplication
 import git.playground.android.datalayer.api.ApiModule
 
@@ -15,6 +14,5 @@ object DepGraph {
             .mainModule(MainModule(application))
             .apiModule(ApiModule(application))
             .build()
-        AndroidThreeTen.init(application)
     }
 }

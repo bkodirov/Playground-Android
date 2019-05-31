@@ -6,34 +6,33 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import git.playground.android.ImmediateSchedulerProvider
-import git.playground.android.datalayer.api.GitHubRestApi
-import git.playground.android.domain.model.Repository
+import git.playground.android.datalayer.api.FlickrRestApi
 import git.playground.android.ui.Fail
 import git.playground.android.ui.Loading
-import git.playground.android.ui.RepositoryUiState
+import git.playground.android.ui.PhotoSearchUiState
 import git.playground.android.ui.Success
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.Instant
 
-class GitRepoViewModelTest {
-    private lateinit var viewModel: GitRepoViewModel
-    private val gitHubRestApi: GitHubRestApi = mock()
-    private val liveDataMock: MutableLiveData<RepositoryUiState> = mock()
+class FlickrPhotoFetcherViewModelTest {
+    private lateinit var viewModel: FlickrPhotoFetcherViewModel
+    private val flickrRestApi: FlickrRestApi = mock()
+    private val liveDataMock: MutableLiveData<PhotoSearchUiState> = mock()
     @Before
     fun setUp() {
-        viewModel = GitRepoViewModel()
+        viewModel = FlickrPhotoFetcherViewModel()
         viewModel.schedulerProvider = ImmediateSchedulerProvider
-        viewModel.repoListLiveData = liveDataMock
-        viewModel.gitHubRestApi = gitHubRestApi
+        viewModel.photoSearchresultLiveData = liveDataMock
+        viewModel.flickrRestApi = flickrRestApi
     }
 
     @Test
     fun `given GitHubService emitting Throwable WHEN fetchRepositoryList called THEN Fail type sent to liveData`() {
         val searchTerm = "search_term"
-        whenever(gitHubRestApi.fetchRepositoryList(searchTerm)).thenReturn(Single.error(RuntimeException("Something went wrong")))
-        viewModel.searchRepository(searchTerm)
+        whenever(flickrRestApi.fetchRepositoryList(searchTerm)).thenReturn(Single.error(RuntimeException("Something went wrong")))
+        viewModel.searchPhotos(searchTerm)
         verify(liveDataMock).value = Loading
         verify(liveDataMock).value = isA<Fail>()
     }
@@ -54,8 +53,8 @@ class GitRepoViewModelTest {
             false,
             "master"
         )
-        whenever(gitHubRestApi.fetchRepositoryList(searchTerm)).thenReturn(Single.just(listOf(fixture)))
-        viewModel.searchRepository(searchTerm)
+        whenever(flickrRestApi.fetchRepositoryList(searchTerm)).thenReturn(Single.just(listOf(fixture)))
+        viewModel.searchPhotos(searchTerm)
         verify(liveDataMock).value = Loading
         verify(liveDataMock).value = isA<Success>()
     }

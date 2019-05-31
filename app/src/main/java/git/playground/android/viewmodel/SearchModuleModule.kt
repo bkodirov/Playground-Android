@@ -4,14 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import dagger.Module
 import dagger.Provides
 import git.playground.android.platform.PlatformSpecificUtils
-import git.playground.android.ui.RepositoryUiState
+import git.playground.android.ui.PhotoSearchUiState
 import git.playground.android.ui.SearchViewDelegate
 
 @Module
-class GitRepoModule {
+class SearchModuleModule {
     @Provides
-    fun provideMutableLiveData() : MutableLiveData<RepositoryUiState> {
-        return MutableLiveData<RepositoryUiState>()
+    fun provideMutableLiveData() : MutableLiveData<PhotoSearchUiState> {
+        return MutableLiveData<PhotoSearchUiState>()
     }
     @Provides
     fun provideSearchViewDelegate(platformSpecificUtils: PlatformSpecificUtils): SearchViewDelegate {
