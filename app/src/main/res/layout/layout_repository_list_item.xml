@@ -25,6 +25,7 @@
     <ImageView
         android:id="@+id/imageViewPhoto"
         tools:src="@android:drawable/btn_star_big_off"
+        android:scaleType="centerCrop"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/photo_hight" />
 </LinearLayout>
